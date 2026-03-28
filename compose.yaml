@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: rogue-db
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --skip-character-set-client-handshake
+    environment:
+      MYSQL_ROOT_PASSWORD: roguemerchant
+      MYSQL_DATABASE: rogue_merchant
+    ports:
+      - "3306:3306"
+    volumes:
+      # This is your key talking point for Volumes (persistence)
+      - db_data:/var/lib/mysql
+      # Automatically runs your schema script on first boot
+      - ./backend/db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - rogue-net
+
+  backend:
+    build: ./backend
+    container_name: rogue-backend
+    restart: always
+    environment:
+      # These variables tell Flask how to connect to the db container
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=roguemerchant
+      - DB_NAME=rogue_merchant
+    depends_on:
+      - db
+    networks:
+      - rogue-net
+
+  frontend:
+    build: ./frontend
+    container_name: rogue-frontend
+    restart: always
+    ports:
+      # Maps your machine's port 8080 to the container's port 80
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - rogue-net
+
+volumes:
+  db_data:
+
+networks:
+  rogue-net:
+    driver: bridge
