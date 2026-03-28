@@ -1,691 +1,1400 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rogue Merchant — Fantasy Market Flip</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-<style>
-/* ═══════════════════════════════════════════════════════════════
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Rogue Merchant — Fantasy Market Flip</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            /* ═══════════════════════════════════════════════════════════════
    ROGUE MERCHANT — Design System
    Theme: candlelit underground bazaar, warmth in the dark
 ════════════════════════════════════════════════════════════════*/
-:root {
-  --bg:          #09060400;
-  --bg-solid:    #090604;
-  --surface:     #110d07;
-  --card:        #1b1208;
-  --card-hover:  #231809;
-  --border:      #362512;
-  --border-glow: #5c3e1a;
-  --gold:        #c9a44a;
-  --gold-light:  #e8c46a;
-  --gold-dim:    #7a5f28;
-  --cream:       #e2ceaa;
-  --cream-dim:   #8a7452;
-  --green:       #5dc87a;
-  --green-dim:   #2d6640;
-  --red:         #d95454;
-  --red-dim:     #6b2828;
-  --blue:        #68aed0;
-  --purple:      #9e7acc;
-  --text:        #cbb890;
-  --text-dim:    #6a5438;
-  --shadow:      rgba(0,0,0,.7);
-  --glow-gold:   rgba(201,164,74,.25);
-  --glow-green:  rgba(93,200,122,.18);
-  --glow-red:    rgba(217,84,84,.15);
-}
+            :root {
+                --bg: #09060400;
+                --bg-solid: #090604;
+                --surface: #110d07;
+                --card: #1b1208;
+                --card-hover: #231809;
+                --border: #362512;
+                --border-glow: #5c3e1a;
+                --gold: #c9a44a;
+                --gold-light: #e8c46a;
+                --gold-dim: #7a5f28;
+                --cream: #e2ceaa;
+                --cream-dim: #8a7452;
+                --green: #5dc87a;
+                --green-dim: #2d6640;
+                --red: #d95454;
+                --red-dim: #6b2828;
+                --blue: #68aed0;
+                --purple: #9e7acc;
+                --text: #cbb890;
+                --text-dim: #6a5438;
+                --shadow: rgba(0, 0, 0, 0.7);
+                --glow-gold: rgba(201, 164, 74, 0.25);
+                --glow-green: rgba(93, 200, 122, 0.18);
+                --glow-red: rgba(217, 84, 84, 0.15);
+            }
 
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-body {
-  background: var(--bg-solid);
-  color: var(--text);
-  font-family: 'Crimson Text', serif;
-  font-size: 16px;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+            body {
+                background: var(--bg-solid);
+                color: var(--text);
+                font-family: "Crimson Text", serif;
+                font-size: 16px;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
 
-/* Atmospheric background glow */
-body::before {
-  content:'';
-  position:fixed; inset:0;
-  background:
-    radial-gradient(ellipse 70% 50% at 15% 15%, rgba(160,90,15,.07) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 70% at 85% 85%, rgba(80,40,5,.09)  0%, transparent 60%);
-  pointer-events:none; z-index:0;
-}
+            /* Atmospheric background glow */
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background:
+                    radial-gradient(
+                        ellipse 70% 50% at 15% 15%,
+                        rgba(160, 90, 15, 0.07) 0%,
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        ellipse 50% 70% at 85% 85%,
+                        rgba(80, 40, 5, 0.09) 0%,
+                        transparent 60%
+                    );
+                pointer-events: none;
+                z-index: 0;
+            }
 
-/* ─── START SCREEN ────────────────────────────────────────────*/
-#start-screen {
-  min-height:100vh; display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  position:relative; z-index:1; padding:2rem;
-}
+            /* ─── LEADERBOARD ─────────────────────────────────────────────*/
+            #leaderboard-screen {
+                display: none;
+                min-height: 100vh;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                z-index: 1;
+                padding: 2rem;
+                flex-direction: column;
+            }
+            .lb-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0.8rem;
+                border-bottom: 1px solid rgba(201, 164, 74, 0.2);
+                font-size: 1.1rem;
+            }
+            .lb-row:last-child {
+                border-bottom: none;
+            }
+            .lb-rank {
+                font-family: "Cinzel Decorative", serif;
+                color: var(--gold-dim);
+                width: 40px;
+            }
+            .lb-name {
+                flex: 1;
+                color: var(--cream);
+                font-weight: 600;
+                text-align: left;
+                padding-left: 1rem;
+            }
+            .lb-score {
+                font-family: "Cinzel", serif;
+                color: var(--gold-light);
+                font-weight: 700;
+            }
 
-.brand {
-  text-align:center; margin-bottom:2.5rem;
-}
+            /* ─── START SCREEN ────────────────────────────────────────────*/
+            #start-screen {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                z-index: 1;
+                padding: 2rem;
+            }
 
-.brand-glyph {
-  font-size:5rem; display:block; margin-bottom:.75rem;
-  filter:drop-shadow(0 0 22px rgba(201,164,74,.5));
-  animation: float 3.5s ease-in-out infinite;
-}
+            .brand {
+                text-align: center;
+                margin-bottom: 2.5rem;
+            }
 
-@keyframes float {
-  0%,100% { transform:translateY(0); }
-  50%      { transform:translateY(-9px); }
-}
+            .brand-glyph {
+                font-size: 5rem;
+                display: block;
+                margin-bottom: 0.75rem;
+                filter: drop-shadow(0 0 22px rgba(201, 164, 74, 0.5));
+                animation: float 3.5s ease-in-out infinite;
+            }
 
-.brand-name {
-  font-family:'Cinzel Decorative', serif;
-  font-size:clamp(1.8rem, 5vw, 3rem);
-  font-weight:700;
-  color: var(--gold-light);
-  text-shadow: 0 0 35px var(--glow-gold), 0 2px 6px rgba(0,0,0,.9);
-  letter-spacing:.04em; line-height:1.1;
-}
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-9px);
+                }
+            }
 
-.brand-tagline {
-  font-family:'Cinzel', serif;
-  font-size:.8rem; letter-spacing:.35em;
-  text-transform:uppercase; color:var(--cream-dim);
-  margin-top:.45rem;
-}
+            .brand-name {
+                font-family: "Cinzel Decorative", serif;
+                font-size: clamp(1.8rem, 5vw, 3rem);
+                font-weight: 700;
+                color: var(--gold-light);
+                text-shadow:
+                    0 0 35px var(--glow-gold),
+                    0 2px 6px rgba(0, 0, 0, 0.9);
+                letter-spacing: 0.04em;
+                line-height: 1.1;
+            }
 
-/* Start card */
-.start-card {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:14px; padding:2.25rem;
-  width:100%; max-width:440px;
-  box-shadow:0 24px 64px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
-}
+            .brand-tagline {
+                font-family: "Cinzel", serif;
+                font-size: 0.8rem;
+                letter-spacing: 0.35em;
+                text-transform: uppercase;
+                color: var(--cream-dim);
+                margin-top: 0.45rem;
+            }
 
-.start-card h2 {
-  font-family:'Cinzel', serif; font-size:1rem;
-  letter-spacing:.25em; text-transform:uppercase;
-  color:var(--cream-dim); text-align:center; margin-bottom:1.4rem;
-}
+            /* Start card */
+            .start-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                padding: 2.25rem;
+                width: 100%;
+                max-width: 440px;
+                box-shadow:
+                    0 24px 64px rgba(0, 0, 0, 0.55),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            }
 
-.rules { list-style:none; margin-bottom:1.75rem; }
-.rules li {
-  display:flex; align-items:flex-start; gap:.75rem;
-  padding:.45rem 0; border-bottom:1px solid rgba(54,37,18,.45);
-  font-size:.95rem; color:var(--cream-dim); line-height:1.5;
-}
-.rules li:last-child { border-bottom:none; }
-.rules .ri { font-size:1.1rem; flex-shrink:0; margin-top:2px; }
+            .start-card h2 {
+                font-family: "Cinzel", serif;
+                font-size: 1rem;
+                letter-spacing: 0.25em;
+                text-transform: uppercase;
+                color: var(--cream-dim);
+                text-align: center;
+                margin-bottom: 1.4rem;
+            }
 
-.field { margin-bottom:1.5rem; }
-.field label {
-  display:block; font-family:'Cinzel', serif;
-  font-size:.7rem; letter-spacing:.22em;
-  text-transform:uppercase; color:var(--gold); margin-bottom:.5rem;
-}
-.field input {
-  width:100%; background:var(--card); border:1px solid var(--border);
-  border-radius:7px; padding:.7rem 1rem;
-  color:var(--cream); font-family:'Crimson Text', serif; font-size:1.05rem;
-  outline:none; transition:border-color .2s, box-shadow .2s;
-}
-.field input:focus {
-  border-color:var(--gold-dim);
-  box-shadow:0 0 0 2px rgba(122,95,40,.22);
-}
+            .rules {
+                list-style: none;
+                margin-bottom: 1.75rem;
+            }
+            .rules li {
+                display: flex;
+                align-items: flex-start;
+                gap: 0.75rem;
+                padding: 0.45rem 0;
+                border-bottom: 1px solid rgba(54, 37, 18, 0.45);
+                font-size: 0.95rem;
+                color: var(--cream-dim);
+                line-height: 1.5;
+            }
+            .rules li:last-child {
+                border-bottom: none;
+            }
+            .rules .ri {
+                font-size: 1.1rem;
+                flex-shrink: 0;
+                margin-top: 2px;
+            }
 
-.btn-gold {
-  width:100%; padding:.95rem;
-  background:linear-gradient(135deg, #7a5f28 0%, #c9a44a 50%, #7a5f28 100%);
-  background-size:200% 100%;
-  border:none; border-radius:8px;
-  color:#160c02; font-family:'Cinzel', serif;
-  font-size:.95rem; font-weight:700;
-  letter-spacing:.18em; text-transform:uppercase;
-  cursor:pointer; transition:all .3s;
-  box-shadow:0 4px 18px rgba(122,95,40,.35);
-}
-.btn-gold:hover {
-  background-position:100% 0;
-  box-shadow:0 7px 28px rgba(201,164,74,.45);
-  transform:translateY(-1px);
-}
-.btn-gold:active { transform:translateY(0); }
+            .field {
+                margin-bottom: 1.5rem;
+            }
+            .field label {
+                display: block;
+                font-family: "Cinzel", serif;
+                font-size: 0.7rem;
+                letter-spacing: 0.22em;
+                text-transform: uppercase;
+                color: var(--gold);
+                margin-bottom: 0.5rem;
+            }
+            .field input {
+                width: 100%;
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 7px;
+                padding: 0.7rem 1rem;
+                color: var(--cream);
+                font-family: "Crimson Text", serif;
+                font-size: 1.05rem;
+                outline: none;
+                transition:
+                    border-color 0.2s,
+                    box-shadow 0.2s;
+            }
+            .field input:focus {
+                border-color: var(--gold-dim);
+                box-shadow: 0 0 0 2px rgba(122, 95, 40, 0.22);
+            }
 
-/* ─── GAME SCREEN ─────────────────────────────────────────────*/
-#game-screen {
-  display:none; flex-direction:column;
-  min-height:100vh; position:relative; z-index:1;
-}
+            .btn-gold {
+                width: 100%;
+                padding: 0.95rem;
+                background: linear-gradient(
+                    135deg,
+                    #7a5f28 0%,
+                    #c9a44a 50%,
+                    #7a5f28 100%
+                );
+                background-size: 200% 100%;
+                border: none;
+                border-radius: 8px;
+                color: #160c02;
+                font-family: "Cinzel", serif;
+                font-size: 0.95rem;
+                font-weight: 700;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.3s;
+                box-shadow: 0 4px 18px rgba(122, 95, 40, 0.35);
+            }
+            .btn-gold:hover {
+                background-position: 100% 0;
+                box-shadow: 0 7px 28px rgba(201, 164, 74, 0.45);
+                transform: translateY(-1px);
+            }
+            .btn-gold:active {
+                transform: translateY(0);
+            }
 
-/* Header */
-.hdr {
-  background:var(--surface); border-bottom:1px solid var(--border);
-  padding:.65rem 1.4rem;
-  display:flex; align-items:center; gap:1.25rem;
-  box-shadow:0 5px 22px rgba(0,0,0,.45);
-  position:sticky; top:0; z-index:100; flex-wrap:wrap;
-}
+            /* ─── GAME SCREEN ─────────────────────────────────────────────*/
+            #game-screen {
+                display: none;
+                flex-direction: column;
+                min-height: 100vh;
+                position: relative;
+                z-index: 1;
+            }
 
-.hdr-logo {
-  font-family:'Cinzel Decorative', serif;
-  font-size:1.1rem; color:var(--gold);
-  white-space:nowrap; flex-shrink:0;
-}
-.hdr-logo span { font-size:1.3rem; }
+            /* Header */
+            .hdr {
+                background: var(--surface);
+                border-bottom: 1px solid var(--border);
+                padding: 0.65rem 1.4rem;
+                display: flex;
+                align-items: center;
+                gap: 1.25rem;
+                box-shadow: 0 5px 22px rgba(0, 0, 0, 0.45);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                flex-wrap: wrap;
+            }
 
-/* Round dots */
-.rdots {
-  display:flex; align-items:center; gap:.5rem; flex-shrink:0;
-}
-.rdots-label {
-  font-family:'Cinzel', serif; font-size:.65rem;
-  letter-spacing:.15em; text-transform:uppercase; color:var(--text-dim);
-}
-.rdots-row { display:flex; gap:4px; }
-.rdot {
-  width:9px; height:9px; border-radius:50%;
-  border:1px solid var(--border-glow); background:var(--card);
-  transition:all .35s;
-}
-.rdot.done    { background:var(--gold-dim); border-color:var(--gold-dim); opacity:.55; }
-.rdot.current { background:var(--gold); border-color:var(--gold-light); box-shadow:0 0 8px var(--gold); }
+            .hdr-logo {
+                font-family: "Cinzel Decorative", serif;
+                font-size: 1.1rem;
+                color: var(--gold);
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            .hdr-logo span {
+                font-size: 1.3rem;
+            }
 
-/* Stat pills */
-.hdr-stats { display:flex; gap:.75rem; margin-left:auto; flex-wrap:wrap; }
-.pill {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:6px; padding:.35rem .85rem;
-  display:flex; align-items:center; gap:.4rem; white-space:nowrap;
-}
-.pill-lbl {
-  font-family:'Cinzel', serif; font-size:.6rem;
-  letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim);
-}
-.pill-val {
-  font-family:'Cinzel', serif; font-size:1rem;
-  font-weight:600; color:var(--gold-light);
-}
-.pill.worth .pill-val { color:var(--cream); }
+            /* Round dots */
+            .rdots {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                flex-shrink: 0;
+            }
+            .rdots-label {
+                font-family: "Cinzel", serif;
+                font-size: 0.65rem;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: var(--text-dim);
+            }
+            .rdots-row {
+                display: flex;
+                gap: 4px;
+            }
+            .rdot {
+                width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                border: 1px solid var(--border-glow);
+                background: var(--card);
+                transition: all 0.35s;
+            }
+            .rdot.done {
+                background: var(--gold-dim);
+                border-color: var(--gold-dim);
+                opacity: 0.55;
+            }
+            .rdot.current {
+                background: var(--gold);
+                border-color: var(--gold-light);
+                box-shadow: 0 0 8px var(--gold);
+            }
 
-/* ─── Main layout ─────────────────────────────────────────────*/
-.game-main {
-  display:grid; grid-template-columns:1fr 320px;
-  flex:1; min-height:0;
-}
+            /* Stat pills */
+            .hdr-stats {
+                display: flex;
+                gap: 0.75rem;
+                margin-left: auto;
+                flex-wrap: wrap;
+            }
+            .pill {
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 6px;
+                padding: 0.35rem 0.85rem;
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+                white-space: nowrap;
+            }
+            .pill-lbl {
+                font-family: "Cinzel", serif;
+                font-size: 0.6rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--text-dim);
+            }
+            .pill-val {
+                font-family: "Cinzel", serif;
+                font-size: 1rem;
+                font-weight: 600;
+                color: var(--gold-light);
+            }
+            .pill.worth .pill-val {
+                color: var(--cream);
+            }
 
-/* Market panel */
-.mkt-panel {
-  padding:1.15rem 1.4rem; border-right:1px solid var(--border);
-  overflow-y:auto;
-}
+            /* ─── Main layout ─────────────────────────────────────────────*/
+            .game-main {
+                display: grid;
+                grid-template-columns: 1fr 320px;
+                flex: 1;
+                min-height: 0;
+            }
 
-.panel-hdr {
-  font-family:'Cinzel', serif; font-size:.7rem;
-  letter-spacing:.28em; text-transform:uppercase;
-  color:var(--text-dim); margin-bottom:.9rem;
-  padding-bottom:.45rem; border-bottom:1px solid var(--border);
-  display:flex; align-items:center; justify-content:space-between;
-}
-.hint-legend { display:flex; gap:.7rem; font-size:.65rem; }
+            /* Market panel */
+            .mkt-panel {
+                padding: 1.15rem 1.4rem;
+                border-right: 1px solid var(--border);
+                overflow-y: auto;
+            }
 
-.items-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(272px, 1fr));
-  gap:.7rem;
-}
+            .panel-hdr {
+                font-family: "Cinzel", serif;
+                font-size: 0.7rem;
+                letter-spacing: 0.28em;
+                text-transform: uppercase;
+                color: var(--text-dim);
+                margin-bottom: 0.9rem;
+                padding-bottom: 0.45rem;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .hint-legend {
+                display: flex;
+                gap: 0.7rem;
+                font-size: 0.65rem;
+            }
 
-/* ─── Item card ───────────────────────────────────────────────*/
-.icard {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:10px; padding:.95rem;
-  transition:all .22s; position:relative; overflow:hidden;
-}
-.icard::after {
-  content:''; position:absolute;
-  top:0; left:0; right:0; height:2px;
-  background:transparent; transition:background .3s;
-}
-.icard.rising  { border-color:rgba(93,200,122,.28); }
-.icard.rising::after  { background:linear-gradient(90deg,transparent,var(--green),transparent); }
-.icard.falling { border-color:rgba(217,84,84,.28); }
-.icard.falling::after { background:linear-gradient(90deg,transparent,var(--red),transparent); }
-.icard:hover {
-  background:var(--card-hover); border-color:var(--border-glow);
-  transform:translateY(-1px);
-  box-shadow:0 8px 28px rgba(0,0,0,.35);
-}
+            .items-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+                gap: 0.7rem;
+            }
 
-.ic-header { display:flex; align-items:flex-start; gap:.7rem; margin-bottom:.7rem; }
-.ic-emoji  { font-size:1.9rem; line-height:1; flex-shrink:0; }
-.ic-meta   { flex:1; }
-.ic-name   {
-  font-family:'Cinzel', serif; font-size:.88rem;
-  font-weight:600; color:var(--cream); line-height:1.2;
-}
-.ic-desc   { font-size:.76rem; color:var(--text-dim); font-style:italic; margin-top:.1rem; }
-.ic-hint   { font-size:1.15rem; flex-shrink:0; cursor:help; }
+            /* ─── Item card ───────────────────────────────────────────────*/
+            .icard {
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 0.95rem;
+                transition: all 0.22s;
+                position: relative;
+                overflow: hidden;
+            }
+            .icard::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: transparent;
+                transition: background 0.3s;
+            }
+            .icard.rising {
+                border-color: rgba(93, 200, 122, 0.28);
+            }
+            .icard.rising::after {
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--green),
+                    transparent
+                );
+            }
+            .icard.falling {
+                border-color: rgba(217, 84, 84, 0.28);
+            }
+            .icard.falling::after {
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--red),
+                    transparent
+                );
+            }
+            .icard:hover {
+                background: var(--card-hover);
+                border-color: var(--border-glow);
+                transform: translateY(-1px);
+                box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+            }
 
-/* Price row */
-.price-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:.55rem; }
-.price-main { display:flex; align-items:baseline; gap:.25rem; }
-.price-val  { font-family:'Cinzel', serif; font-size:1.25rem; font-weight:700; color:var(--gold-light); }
-.price-unit { font-size:.72rem; color:var(--gold-dim); }
-.price-chg  { font-size:.76rem; font-weight:600; padding:.1rem .35rem; border-radius:4px; }
-.price-chg.up   { color:var(--green); background:rgba(93,200,122,.12); }
-.price-chg.dn   { color:var(--red);   background:rgba(217,84,84,.11); }
-.price-chg.flat { color:var(--text-dim); }
+            .ic-header {
+                display: flex;
+                align-items: flex-start;
+                gap: 0.7rem;
+                margin-bottom: 0.7rem;
+            }
+            .ic-emoji {
+                font-size: 1.9rem;
+                line-height: 1;
+                flex-shrink: 0;
+            }
+            .ic-meta {
+                flex: 1;
+            }
+            .ic-name {
+                font-family: "Cinzel", serif;
+                font-size: 0.88rem;
+                font-weight: 600;
+                color: var(--cream);
+                line-height: 1.2;
+            }
+            .ic-desc {
+                font-size: 0.76rem;
+                color: var(--text-dim);
+                font-style: italic;
+                margin-top: 0.1rem;
+            }
+            .ic-hint {
+                font-size: 1.15rem;
+                flex-shrink: 0;
+                cursor: help;
+            }
 
-/* Sparkline */
-.spark-wrap { height:30px; margin-bottom:.65rem; }
-.spark-wrap svg { width:100%; height:100%; }
+            /* Price row */
+            .price-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 0.55rem;
+            }
+            .price-main {
+                display: flex;
+                align-items: baseline;
+                gap: 0.25rem;
+            }
+            .price-val {
+                font-family: "Cinzel", serif;
+                font-size: 1.25rem;
+                font-weight: 700;
+                color: var(--gold-light);
+            }
+            .price-unit {
+                font-size: 0.72rem;
+                color: var(--gold-dim);
+            }
+            .price-chg {
+                font-size: 0.76rem;
+                font-weight: 600;
+                padding: 0.1rem 0.35rem;
+                border-radius: 4px;
+            }
+            .price-chg.up {
+                color: var(--green);
+                background: rgba(93, 200, 122, 0.12);
+            }
+            .price-chg.dn {
+                color: var(--red);
+                background: rgba(217, 84, 84, 0.11);
+            }
+            .price-chg.flat {
+                color: var(--text-dim);
+            }
 
-/* Owned row */
-.owned-row {
-  font-size:.78rem; color:var(--text-dim);
-  display:flex; align-items:center; gap:.45rem; margin-bottom:.65rem;
-}
-.owned-num { font-family:'Cinzel', serif; font-size:.82rem; color:var(--cream); font-weight:600; }
-.pl-tag { font-size:.72rem; padding:.08rem .38rem; border-radius:3px; font-weight:600; }
-.pl-tag.up  { color:var(--green); background:rgba(93,200,122,.12); }
-.pl-tag.dn  { color:var(--red);   background:rgba(217,84,84,.11); }
+            /* Sparkline */
+            .spark-wrap {
+                height: 30px;
+                margin-bottom: 0.65rem;
+            }
+            .spark-wrap svg {
+                width: 100%;
+                height: 100%;
+            }
 
-/* Trade controls */
-.trade-ctrls { display:flex; align-items:center; gap:.38rem; }
-.qty-wrap {
-  display:flex; align-items:center;
-  background:var(--surface); border:1px solid var(--border); border-radius:6px; overflow:hidden;
-}
-.qbtn {
-  width:27px; height:27px; background:none; border:none;
-  color:var(--gold); cursor:pointer; font-size:.95rem; font-weight:700;
-  display:flex; align-items:center; justify-content:center; transition:background .15s;
-}
-.qbtn:hover { background:rgba(201,164,74,.1); }
-.qinput {
-  width:34px; text-align:center; background:none; border:none;
-  color:var(--cream); font-family:'Cinzel', serif; font-size:.88rem; outline:none;
-}
-.qinput::-webkit-inner-spin-button { display:none; }
+            /* Owned row */
+            .owned-row {
+                font-size: 0.78rem;
+                color: var(--text-dim);
+                display: flex;
+                align-items: center;
+                gap: 0.45rem;
+                margin-bottom: 0.65rem;
+            }
+            .owned-num {
+                font-family: "Cinzel", serif;
+                font-size: 0.82rem;
+                color: var(--cream);
+                font-weight: 600;
+            }
+            .pl-tag {
+                font-size: 0.72rem;
+                padding: 0.08rem 0.38rem;
+                border-radius: 3px;
+                font-weight: 600;
+            }
+            .pl-tag.up {
+                color: var(--green);
+                background: rgba(93, 200, 122, 0.12);
+            }
+            .pl-tag.dn {
+                color: var(--red);
+                background: rgba(217, 84, 84, 0.11);
+            }
 
-.btn-buy, .btn-sell {
-  flex:1; padding:.32rem 0; border:none; border-radius:6px;
-  cursor:pointer; font-family:'Cinzel', serif;
-  font-size:.72rem; font-weight:700;
-  letter-spacing:.1em; text-transform:uppercase; transition:all .2s;
-}
-.btn-buy  {
-  background:rgba(93,200,122,.14); color:var(--green);
-  border:1px solid rgba(93,200,122,.28);
-}
-.btn-buy:hover  { background:rgba(93,200,122,.24); box-shadow:0 0 14px var(--glow-green); }
-.btn-sell {
-  background:rgba(217,84,84,.13); color:var(--red);
-  border:1px solid rgba(217,84,84,.26);
-}
-.btn-sell:hover { background:rgba(217,84,84,.23); box-shadow:0 0 14px var(--glow-red); }
-.btn-buy:disabled, .btn-sell:disabled { opacity:.3; cursor:not-allowed; }
+            /* Trade controls */
+            .trade-ctrls {
+                display: flex;
+                align-items: center;
+                gap: 0.38rem;
+            }
+            .qty-wrap {
+                display: flex;
+                align-items: center;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 6px;
+                overflow: hidden;
+            }
+            .qbtn {
+                width: 27px;
+                height: 27px;
+                background: none;
+                border: none;
+                color: var(--gold);
+                cursor: pointer;
+                font-size: 0.95rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.15s;
+            }
+            .qbtn:hover {
+                background: rgba(201, 164, 74, 0.1);
+            }
+            .qinput {
+                width: 34px;
+                text-align: center;
+                background: none;
+                border: none;
+                color: var(--cream);
+                font-family: "Cinzel", serif;
+                font-size: 0.88rem;
+                outline: none;
+            }
+            .qinput::-webkit-inner-spin-button {
+                display: none;
+            }
 
-/* ─── Right panel ─────────────────────────────────────────────*/
-.right-panel { display:flex; flex-direction:column; overflow:hidden; }
+            .btn-buy,
+            .btn-sell {
+                flex: 1;
+                padding: 0.32rem 0;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-family: "Cinzel", serif;
+                font-size: 0.72rem;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                transition: all 0.2s;
+            }
+            .btn-buy {
+                background: rgba(93, 200, 122, 0.14);
+                color: var(--green);
+                border: 1px solid rgba(93, 200, 122, 0.28);
+            }
+            .btn-buy:hover {
+                background: rgba(93, 200, 122, 0.24);
+                box-shadow: 0 0 14px var(--glow-green);
+            }
+            .btn-sell {
+                background: rgba(217, 84, 84, 0.13);
+                color: var(--red);
+                border: 1px solid rgba(217, 84, 84, 0.26);
+            }
+            .btn-sell:hover {
+                background: rgba(217, 84, 84, 0.23);
+                box-shadow: 0 0 14px var(--glow-red);
+            }
+            .btn-buy:disabled,
+            .btn-sell:disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+            }
 
-.port-panel   { padding:1.1rem; border-bottom:1px solid var(--border); flex-shrink:0; }
-.log-panel    { flex:1; overflow-y:auto; padding:1.1rem; min-height:0; }
+            /* ─── Right panel ─────────────────────────────────────────────*/
+            .right-panel {
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
 
-.p-empty {
-  text-align:center; padding:.85rem;
-  color:var(--text-dim); font-style:italic; font-size:.88rem; line-height:1.5;
-}
+            .port-panel {
+                padding: 1.1rem;
+                border-bottom: 1px solid var(--border);
+                flex-shrink: 0;
+            }
+            .log-panel {
+                flex: 1;
+                overflow-y: auto;
+                padding: 1.1rem;
+                min-height: 0;
+            }
 
-/* Holding rows */
-.holding {
-  display:flex; align-items:center; gap:.45rem;
-  padding:.42rem 0; border-bottom:1px solid rgba(54,37,18,.3);
-  font-size:.82rem;
-}
-.holding:last-child { border-bottom:none; }
-.h-emoji { font-size:1rem; }
-.h-name  { flex:1; font-family:'Cinzel', serif; font-size:.76rem; color:var(--cream); }
-.h-qty   { color:var(--text-dim); font-size:.75rem; }
-.h-pl    { font-family:'Cinzel', serif; font-size:.76rem; font-weight:600; text-align:right; min-width:52px; }
-.h-pl.up { color:var(--green); }
-.h-pl.dn { color:var(--red); }
+            .p-empty {
+                text-align: center;
+                padding: 0.85rem;
+                color: var(--text-dim);
+                font-style: italic;
+                font-size: 0.88rem;
+                line-height: 1.5;
+            }
 
-/* Log entries */
-.log-row {
-  display:flex; align-items:center; gap:.42rem;
-  padding:.38rem 0; border-bottom:1px solid rgba(54,37,18,.2); font-size:.78rem;
-}
-.log-row:last-child { border-bottom:none; }
-.log-badge {
-  font-family:'Cinzel', serif; font-size:.62rem; font-weight:700;
-  padding:.09rem .38rem; border-radius:3px; letter-spacing:.05em; flex-shrink:0;
-}
-.log-badge.buy  { background:rgba(93,200,122,.14); color:var(--green); border:1px solid rgba(93,200,122,.28); }
-.log-badge.sell { background:rgba(217,84,84,.12);  color:var(--red);   border:1px solid rgba(217,84,84,.25); }
-.log-text  { flex:1; color:var(--text-dim); line-height:1.3; }
-.log-text strong { color:var(--cream); }
-.log-pl    { font-family:'Cinzel', serif; font-size:.72rem; font-weight:600; flex-shrink:0; }
-.log-pl.up { color:var(--green); }
-.log-pl.dn { color:var(--red); }
+            /* Holding rows */
+            .holding {
+                display: flex;
+                align-items: center;
+                gap: 0.45rem;
+                padding: 0.42rem 0;
+                border-bottom: 1px solid rgba(54, 37, 18, 0.3);
+                font-size: 0.82rem;
+            }
+            .holding:last-child {
+                border-bottom: none;
+            }
+            .h-emoji {
+                font-size: 1rem;
+            }
+            .h-name {
+                flex: 1;
+                font-family: "Cinzel", serif;
+                font-size: 0.76rem;
+                color: var(--cream);
+            }
+            .h-qty {
+                color: var(--text-dim);
+                font-size: 0.75rem;
+            }
+            .h-pl {
+                font-family: "Cinzel", serif;
+                font-size: 0.76rem;
+                font-weight: 600;
+                text-align: right;
+                min-width: 52px;
+            }
+            .h-pl.up {
+                color: var(--green);
+            }
+            .h-pl.dn {
+                color: var(--red);
+            }
 
-/* ─── Footer ──────────────────────────────────────────────────*/
-.game-footer {
-  background:var(--surface); border-top:1px solid var(--border);
-  padding:.9rem 1.4rem;
-  display:flex; align-items:center; justify-content:space-between; gap:1rem;
-}
-.footer-tip { font-size:.83rem; color:var(--text-dim); font-style:italic; }
+            /* Log entries */
+            .log-row {
+                display: flex;
+                align-items: center;
+                gap: 0.42rem;
+                padding: 0.38rem 0;
+                border-bottom: 1px solid rgba(54, 37, 18, 0.2);
+                font-size: 0.78rem;
+            }
+            .log-row:last-child {
+                border-bottom: none;
+            }
+            .log-badge {
+                font-family: "Cinzel", serif;
+                font-size: 0.62rem;
+                font-weight: 700;
+                padding: 0.09rem 0.38rem;
+                border-radius: 3px;
+                letter-spacing: 0.05em;
+                flex-shrink: 0;
+            }
+            .log-badge.buy {
+                background: rgba(93, 200, 122, 0.14);
+                color: var(--green);
+                border: 1px solid rgba(93, 200, 122, 0.28);
+            }
+            .log-badge.sell {
+                background: rgba(217, 84, 84, 0.12);
+                color: var(--red);
+                border: 1px solid rgba(217, 84, 84, 0.25);
+            }
+            .log-text {
+                flex: 1;
+                color: var(--text-dim);
+                line-height: 1.3;
+            }
+            .log-text strong {
+                color: var(--cream);
+            }
+            .log-pl {
+                font-family: "Cinzel", serif;
+                font-size: 0.72rem;
+                font-weight: 600;
+                flex-shrink: 0;
+            }
+            .log-pl.up {
+                color: var(--green);
+            }
+            .log-pl.dn {
+                color: var(--red);
+            }
 
-.btn-next {
-  background:linear-gradient(135deg,#4a2e0e 0%,#7a5220 50%,#4a2e0e 100%);
-  background-size:200% 100%;
-  border:1px solid var(--gold-dim); border-radius:8px;
-  color:var(--gold-light); font-family:'Cinzel', serif;
-  font-size:.85rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-  padding:.7rem 1.8rem; cursor:pointer; transition:all .3s;
-  box-shadow:0 4px 16px rgba(0,0,0,.35);
-}
-.btn-next:hover {
-  background-position:100% 0;
-  box-shadow:0 6px 24px var(--glow-gold);
-  border-color:var(--gold); color:#fff;
-  transform:translateY(-1px);
-}
-.btn-next.final-round {
-  background:linear-gradient(135deg,#4a0e0e 0%,#8a2020 50%,#4a0e0e 100%);
-  background-size:200% 100%;
-  border-color:var(--red-dim); color:#ffbbbb;
-}
+            /* ─── Footer ──────────────────────────────────────────────────*/
+            .game-footer {
+                background: var(--surface);
+                border-top: 1px solid var(--border);
+                padding: 0.9rem 1.4rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+            .footer-tip {
+                font-size: 0.83rem;
+                color: var(--text-dim);
+                font-style: italic;
+            }
 
-/* ─── GAME OVER ───────────────────────────────────────────────*/
-#gameover-screen {
-  display:none; min-height:100vh;
-  align-items:center; justify-content:center;
-  position:relative; z-index:1; padding:2rem;
-  flex-direction:column;
-}
+            .btn-next {
+                background: linear-gradient(
+                    135deg,
+                    #4a2e0e 0%,
+                    #7a5220 50%,
+                    #4a2e0e 100%
+                );
+                background-size: 200% 100%;
+                border: 1px solid var(--gold-dim);
+                border-radius: 8px;
+                color: var(--gold-light);
+                font-family: "Cinzel", serif;
+                font-size: 0.85rem;
+                font-weight: 700;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                padding: 0.7rem 1.8rem;
+                cursor: pointer;
+                transition: all 0.3s;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+            }
+            .btn-next:hover {
+                background-position: 100% 0;
+                box-shadow: 0 6px 24px var(--glow-gold);
+                border-color: var(--gold);
+                color: #fff;
+                transform: translateY(-1px);
+            }
+            .btn-next.final-round {
+                background: linear-gradient(
+                    135deg,
+                    #4a0e0e 0%,
+                    #8a2020 50%,
+                    #4a0e0e 100%
+                );
+                background-size: 200% 100%;
+                border-color: var(--red-dim);
+                color: #ffbbbb;
+            }
 
-.go-card {
-  background:var(--surface);
-  border:1px solid var(--border-glow);
-  border-radius:16px; padding:2.75rem;
-  width:100%; max-width:520px; text-align:center;
-  box-shadow:0 32px 80px rgba(0,0,0,.65), 0 0 50px rgba(201,164,74,.04);
-}
+            /* ─── GAME OVER ───────────────────────────────────────────────*/
+            #gameover-screen {
+                display: none;
+                min-height: 100vh;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                z-index: 1;
+                padding: 2rem;
+                flex-direction: column;
+            }
 
-.go-icon    { font-size:3.8rem; display:block; margin-bottom:.85rem; animation:float 3.5s ease-in-out infinite; }
-.go-title   { font-family:'Cinzel Decorative', serif; font-size:1.75rem; color:var(--gold-light); margin-bottom:.4rem; text-shadow:0 0 22px var(--glow-gold); }
-.go-sub     { color:var(--text-dim); font-style:italic; margin-bottom:2.25rem; font-size:.98rem; }
+            .go-card {
+                background: var(--surface);
+                border: 1px solid var(--border-glow);
+                border-radius: 16px;
+                padding: 2.75rem;
+                width: 100%;
+                max-width: 520px;
+                text-align: center;
+                box-shadow:
+                    0 32px 80px rgba(0, 0, 0, 0.65),
+                    0 0 50px rgba(201, 164, 74, 0.04);
+            }
 
-.score-box  {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:10px; padding:1.35rem; margin-bottom:1.75rem;
-}
-.score-lbl  { font-family:'Cinzel', serif; font-size:.68rem; letter-spacing:.3em; text-transform:uppercase; color:var(--text-dim); margin-bottom:.4rem; }
-.score-num  { font-family:'Cinzel Decorative', serif; font-size:2.8rem; color:var(--gold-light); text-shadow:0 0 28px var(--glow-gold); line-height:1; }
-.score-unit { font-family:'Cinzel', serif; font-size:.9rem; color:var(--gold-dim); }
-.score-pl   { margin-top:.65rem; font-size:.95rem; }
+            .go-icon {
+                font-size: 3.8rem;
+                display: block;
+                margin-bottom: 0.85rem;
+                animation: float 3.5s ease-in-out infinite;
+            }
+            .go-title {
+                font-family: "Cinzel Decorative", serif;
+                font-size: 1.75rem;
+                color: var(--gold-light);
+                margin-bottom: 0.4rem;
+                text-shadow: 0 0 22px var(--glow-gold);
+            }
+            .go-sub {
+                color: var(--text-dim);
+                font-style: italic;
+                margin-bottom: 2.25rem;
+                font-size: 0.98rem;
+            }
 
-.rank-badge {
-  display:inline-block; padding:.28rem 1rem; border-radius:20px;
-  font-family:'Cinzel', serif; font-size:.82rem; font-weight:700;
-  letter-spacing:.1em; margin-bottom:1.4rem;
-}
-.rank-legend  { background:rgba(158,122,204,.18); color:var(--purple); border:1px solid rgba(158,122,204,.35); }
-.rank-great   { background:rgba(201,164,74,.18);  color:var(--gold);   border:1px solid rgba(201,164,74,.35); }
-.rank-decent  { background:rgba(104,174,208,.18); color:var(--blue);   border:1px solid rgba(104,174,208,.35); }
-.rank-broke   { background:rgba(217,84,84,.15);   color:var(--red);    border:1px solid rgba(217,84,84,.3); }
+            .score-box {
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 1.35rem;
+                margin-bottom: 1.75rem;
+            }
+            .score-lbl {
+                font-family: "Cinzel", serif;
+                font-size: 0.68rem;
+                letter-spacing: 0.3em;
+                text-transform: uppercase;
+                color: var(--text-dim);
+                margin-bottom: 0.4rem;
+            }
+            .score-num {
+                font-family: "Cinzel Decorative", serif;
+                font-size: 2.8rem;
+                color: var(--gold-light);
+                text-shadow: 0 0 28px var(--glow-gold);
+                line-height: 1;
+            }
+            .score-unit {
+                font-family: "Cinzel", serif;
+                font-size: 0.9rem;
+                color: var(--gold-dim);
+            }
+            .score-pl {
+                margin-top: 0.65rem;
+                font-size: 0.95rem;
+            }
 
-/* ─── TOAST ───────────────────────────────────────────────────*/
-.toast {
-  position:fixed; bottom:1.4rem; left:50%;
-  transform:translateX(-50%) translateY(70px);
-  background:var(--surface); border:1px solid var(--border-glow);
-  border-radius:8px; padding:.65rem 1.35rem;
-  font-family:'Cinzel', serif; font-size:.8rem;
-  z-index:1000; transition:transform .3s cubic-bezier(.34,1.56,.64,1);
-  white-space:nowrap; box-shadow:0 8px 26px rgba(0,0,0,.45);
-}
-.toast.show { transform:translateX(-50%) translateY(0); }
-.toast.ok   { color:var(--green); border-color:rgba(93,200,122,.38); }
-.toast.err  { color:var(--red);   border-color:rgba(217,84,84,.35); }
-.toast.info { color:var(--gold); }
+            .rank-badge {
+                display: inline-block;
+                padding: 0.28rem 1rem;
+                border-radius: 20px;
+                font-family: "Cinzel", serif;
+                font-size: 0.82rem;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+                margin-bottom: 1.4rem;
+            }
+            .rank-legend {
+                background: rgba(158, 122, 204, 0.18);
+                color: var(--purple);
+                border: 1px solid rgba(158, 122, 204, 0.35);
+            }
+            .rank-great {
+                background: rgba(201, 164, 74, 0.18);
+                color: var(--gold);
+                border: 1px solid rgba(201, 164, 74, 0.35);
+            }
+            .rank-decent {
+                background: rgba(104, 174, 208, 0.18);
+                color: var(--blue);
+                border: 1px solid rgba(104, 174, 208, 0.35);
+            }
+            .rank-broke {
+                background: rgba(217, 84, 84, 0.15);
+                color: var(--red);
+                border: 1px solid rgba(217, 84, 84, 0.3);
+            }
 
-/* ─── LOADING ─────────────────────────────────────────────────*/
-.loader {
-  position:fixed; inset:0; background:rgba(9,6,4,.88);
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  z-index:500; gap:1rem;
-}
-.loader.off { display:none; }
-.spinner {
-  width:38px; height:38px; border:3px solid var(--border);
-  border-top-color:var(--gold); border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-@keyframes spin { to { transform:rotate(360deg); } }
-.loader-txt {
-  font-family:'Cinzel', serif; font-size:.8rem;
-  color:var(--text-dim); letter-spacing:.22em; text-transform:uppercase;
-}
+            /* ─── TOAST ───────────────────────────────────────────────────*/
+            .toast {
+                position: fixed;
+                bottom: 1.4rem;
+                left: 50%;
+                transform: translateX(-50%) translateY(70px);
+                background: var(--surface);
+                border: 1px solid var(--border-glow);
+                border-radius: 8px;
+                padding: 0.65rem 1.35rem;
+                font-family: "Cinzel", serif;
+                font-size: 0.8rem;
+                z-index: 1000;
+                transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                white-space: nowrap;
+                box-shadow: 0 8px 26px rgba(0, 0, 0, 0.45);
+            }
+            .toast.show {
+                transform: translateX(-50%) translateY(0);
+            }
+            .toast.ok {
+                color: var(--green);
+                border-color: rgba(93, 200, 122, 0.38);
+            }
+            .toast.err {
+                color: var(--red);
+                border-color: rgba(217, 84, 84, 0.35);
+            }
+            .toast.info {
+                color: var(--gold);
+            }
 
-/* ─── FLASH ANIMATIONS ────────────────────────────────────────*/
-@keyframes flash-buy  { 0%,100%{background:var(--card)} 50%{background:rgba(93,200,122,.14)} }
-@keyframes flash-sell { 0%,100%{background:var(--card)} 50%{background:rgba(217,84,84,.12)} }
-.fbuy  { animation:flash-buy  .55s ease; }
-.fsell { animation:flash-sell .55s ease; }
+            /* ─── LOADING ─────────────────────────────────────────────────*/
+            .loader {
+                position: fixed;
+                inset: 0;
+                background: rgba(9, 6, 4, 0.88);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 500;
+                gap: 1rem;
+            }
+            .loader.off {
+                display: none;
+            }
+            .spinner {
+                width: 38px;
+                height: 38px;
+                border: 3px solid var(--border);
+                border-top-color: var(--gold);
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            .loader-txt {
+                font-family: "Cinzel", serif;
+                font-size: 0.8rem;
+                color: var(--text-dim);
+                letter-spacing: 0.22em;
+                text-transform: uppercase;
+            }
 
-/* ─── SCROLLBAR ───────────────────────────────────────────────*/
-::-webkit-scrollbar         { width:5px; }
-::-webkit-scrollbar-track   { background:var(--bg-solid); }
-::-webkit-scrollbar-thumb   { background:var(--border); border-radius:3px; }
-::-webkit-scrollbar-thumb:hover { background:var(--border-glow); }
+            /* ─── FLASH ANIMATIONS ────────────────────────────────────────*/
+            @keyframes flash-buy {
+                0%,
+                100% {
+                    background: var(--card);
+                }
+                50% {
+                    background: rgba(93, 200, 122, 0.14);
+                }
+            }
+            @keyframes flash-sell {
+                0%,
+                100% {
+                    background: var(--card);
+                }
+                50% {
+                    background: rgba(217, 84, 84, 0.12);
+                }
+            }
+            .fbuy {
+                animation: flash-buy 0.55s ease;
+            }
+            .fsell {
+                animation: flash-sell 0.55s ease;
+            }
 
-/* ─── RESPONSIVE ──────────────────────────────────────────────*/
-@media (max-width: 720px) {
-  .game-main { grid-template-columns:1fr; }
-  .right-panel { border-right:none; border-top:1px solid var(--border); max-height:300px; }
-  .hdr-stats { margin-left:0; width:100%; }
-}
-</style>
-</head>
-<body>
+            /* ─── SCROLLBAR ───────────────────────────────────────────────*/
+            ::-webkit-scrollbar {
+                width: 5px;
+            }
+            ::-webkit-scrollbar-track {
+                background: var(--bg-solid);
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 3px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--border-glow);
+            }
 
-<!-- LOADER -->
-<div class="loader off" id="loader">
-  <div class="spinner"></div>
-  <div class="loader-txt" id="loader-txt">Preparing the Bazaar…</div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- ═══════════════════════════════ START SCREEN ═════════════-->
-<div id="start-screen">
-  <div class="brand">
-    <span class="brand-glyph">🛸</span>
-    <div class="brand-name">Rogue Merchant</div>
-    <div class="brand-tagline">The Fantasy Market Flip</div>
-  </div>
-
-  <div class="start-card">
-    <h2>The Rules of Trade</h2>
-    <ul class="rules">
-      <li><span class="ri">💰</span><span>Start with <strong style="color:var(--gold-light)">500 gold</strong>. Survive all 10 rounds.</span></li>
-      <li><span class="ri">📊</span><span>Prices shift every round. Buy low, sell high.</span></li>
-      <li><span class="ri">🔮</span><span>Hint arrows forecast the <em>next</em> round's direction.</span></li>
-      <li><span class="ri">📈</span><span>Sparklines show this item's price history at a glance.</span></li>
-      <li><span class="ri">🏆</span><span>Final score = gold + value of unsold items at round&nbsp;10.</span></li>
-      <li><span class="ri">⚠️</span><span>Markets are unpredictable — don't hold too long!</span></li>
-    </ul>
-
-    <div class="field">
-      <label>Your Merchant Name</label>
-      <input type="text" id="player-name" placeholder="Enter your name…" maxlength="30" value="Merchant">
-    </div>
-
-    <button class="btn-gold" onclick="startGame()">⚔️ &nbsp; Open the Bazaar</button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════ GAME SCREEN ══════════════-->
-<div id="game-screen">
-
-  <!-- Header -->
-  <header class="hdr">
-    <div class="hdr-logo"><span>🛸</span> Rogue Merchant</div>
-
-    <div class="rdots">
-      <span class="rdots-label">Round</span>
-      <div class="rdots-row" id="rdots-row"></div>
-    </div>
-
-    <div class="hdr-stats">
-      <div class="pill">
-        <span class="pill-lbl">💰 Gold</span>
-        <span class="pill-val" id="gold-val">500</span>
-      </div>
-      <div class="pill worth">
-        <span class="pill-lbl">📊 Net Worth</span>
-        <span class="pill-val" id="worth-val">500</span>
-      </div>
-      <div class="pill">
-        <span class="pill-lbl">🧭 Round</span>
-        <span class="pill-val" id="round-val">1 / 10</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main -->
-  <div class="game-main">
-
-    <!-- Market -->
-    <div class="mkt-panel">
-      <div class="panel-hdr">
-        <span>⚔️ The Bazaar — Today's Prices</span>
-        <div class="hint-legend">
-          <span>📈 Rising</span><span>📉 Falling</span><span>➡️ Stable</span>
+            /* ─── RESPONSIVE ──────────────────────────────────────────────*/
+            @media (max-width: 720px) {
+                .game-main {
+                    grid-template-columns: 1fr;
+                }
+                .right-panel {
+                    border-right: none;
+                    border-top: 1px solid var(--border);
+                    max-height: 300px;
+                }
+                .hdr-stats {
+                    margin-left: 0;
+                    width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- LOADER -->
+        <div class="loader off" id="loader">
+            <div class="spinner"></div>
+            <div class="loader-txt" id="loader-txt">Preparing the Bazaar…</div>
         </div>
-      </div>
-      <div class="items-grid" id="items-grid"></div>
-    </div>
 
-    <!-- Right: portfolio + log -->
-    <div class="right-panel">
-      <div class="port-panel">
-        <div class="panel-hdr" style="margin-bottom:.7rem">🎒 Your Satchel</div>
-        <div id="port-list"><div class="p-empty">Satchel is empty.<br>Start trading!</div></div>
-      </div>
-      <div class="log-panel">
-        <div class="panel-hdr" style="margin-bottom:.7rem">📜 Trade Log</div>
-        <div id="trade-log"><div class="p-empty">No trades yet.</div></div>
-      </div>
-    </div>
+        <!-- TOAST -->
+        <div class="toast" id="toast"></div>
 
-  </div><!-- /game-main -->
+        <!-- ═══════════════════════════════ START SCREEN ═════════════-->
+        <div id="start-screen">
+            <div class="brand">
+                <span class="brand-glyph">🛸</span>
+                <div class="brand-name">Rogue Merchant</div>
+                <div class="brand-tagline">The Fantasy Market Flip</div>
+            </div>
 
-  <!-- Footer -->
-  <footer class="game-footer">
-    <div class="footer-tip" id="footer-tip">Hint arrows show next round's direction — use them wisely!</div>
-    <button class="btn-next" id="btn-next" onclick="nextRound()">Advance to Round 2 →</button>
-  </footer>
+            <div class="start-card">
+                <h2>The Rules of Trade</h2>
+                <ul class="rules">
+                    <li>
+                        <span class="ri">💰</span
+                        ><span
+                            >Start with
+                            <strong style="color: var(--gold-light)"
+                                >500 gold</strong
+                            >. Survive all 10 rounds.</span
+                        >
+                    </li>
+                    <li>
+                        <span class="ri">📊</span
+                        ><span
+                            >Prices shift every round. Buy low, sell high.</span
+                        >
+                    </li>
+                    <li>
+                        <span class="ri">🔮</span
+                        ><span
+                            >Hint arrows forecast the <em>next</em> round's
+                            direction.</span
+                        >
+                    </li>
+                    <li>
+                        <span class="ri">📈</span
+                        ><span
+                            >Sparklines show this item's price history at a
+                            glance.</span
+                        >
+                    </li>
+                    <li>
+                        <span class="ri">🏆</span
+                        ><span
+                            >Final score = gold + value of unsold items at
+                            round&nbsp;10.</span
+                        >
+                    </li>
+                    <li>
+                        <span class="ri">⚠️</span
+                        ><span
+                            >Markets are unpredictable — don't hold too
+                            long!</span
+                        >
+                    </li>
+                </ul>
 
-</div><!-- /game-screen -->
+                <div class="field">
+                    <label>Your Merchant Name</label>
+                    <input
+                        type="text"
+                        id="player-name"
+                        placeholder="Enter your name…"
+                        maxlength="30"
+                        value="Merchant"
+                    />
+                </div>
 
-<!-- ═══════════════════════════════ GAME OVER ════════════════-->
-<div id="gameover-screen">
-  <div class="go-card">
-    <span class="go-icon" id="go-icon">🏆</span>
-    <div class="go-title">Journey's End</div>
-    <div class="go-sub" id="go-sub">The bazaar has closed its gates for the season.</div>
+                <button class="btn-gold" onclick="startGame()">
+                    ⚔️ &nbsp; Open the Bazaar
+                </button>
+                <button
+                    class="btn-gold"
+                    style="
+                        margin-top: 1rem;
+                        background: transparent;
+                        border: 1px solid var(--gold-dim);
+                        color: var(--gold);
+                    "
+                    onclick="showLeaderboard()"
+                >
+                    🏆 &nbsp; View Leaderboard
+                </button>
+            </div>
+        </div>
 
-    <div class="score-box">
-      <div class="score-lbl">Final Gold</div>
-      <div class="score-num" id="go-score">0</div>
-      <div class="score-unit">gold pieces</div>
-      <div class="score-pl" id="go-pl"></div>
-    </div>
+        <!-- ═══════════════════════════════ GAME SCREEN ══════════════-->
+        <div id="game-screen">
+            <!-- Header -->
+            <header class="hdr">
+                <div class="hdr-logo"><span>🛸</span> Rogue Merchant</div>
 
-    <div class="rank-badge" id="go-rank">—</div><br>
+                <div class="rdots">
+                    <span class="rdots-label">Round</span>
+                    <div class="rdots-row" id="rdots-row"></div>
+                </div>
 
-    <button class="btn-gold" style="max-width:280px; margin:0 auto" onclick="restartGame()">
-      🔄 &nbsp; Play Again
-    </button>
-  </div>
-</div>
+                <div class="hdr-stats">
+                    <div class="pill">
+                        <span class="pill-lbl">💰 Gold</span>
+                        <span class="pill-val" id="gold-val">500</span>
+                    </div>
+                    <div class="pill worth">
+                        <span class="pill-lbl">📊 Net Worth</span>
+                        <span class="pill-val" id="worth-val">500</span>
+                    </div>
+                    <div class="pill">
+                        <span class="pill-lbl">🧭 Round</span>
+                        <span class="pill-val" id="round-val">1 / 10</span>
+                    </div>
+                </div>
+            </header>
 
-<!-- ════════════════════════════════════════════════════════════
+            <!-- Main -->
+            <div class="game-main">
+                <!-- Market -->
+                <div class="mkt-panel">
+                    <div class="panel-hdr">
+                        <span>⚔️ The Bazaar — Today's Prices</span>
+                        <div class="hint-legend">
+                            <span>📈 Rising</span><span>📉 Falling</span
+                            ><span>➡️ Stable</span>
+                        </div>
+                    </div>
+                    <div class="items-grid" id="items-grid"></div>
+                </div>
+
+                <!-- Right: portfolio + log -->
+                <div class="right-panel">
+                    <div class="port-panel">
+                        <div class="panel-hdr" style="margin-bottom: 0.7rem">
+                            🎒 Your Satchel
+                        </div>
+                        <div id="port-list">
+                            <div class="p-empty">
+                                Satchel is empty.<br />Start trading!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="log-panel">
+                        <div class="panel-hdr" style="margin-bottom: 0.7rem">
+                            📜 Trade Log
+                        </div>
+                        <div id="trade-log">
+                            <div class="p-empty">No trades yet.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /game-main -->
+
+            <!-- Footer -->
+            <footer class="game-footer">
+                <div class="footer-tip" id="footer-tip">
+                    Hint arrows show next round's direction — use them wisely!
+                </div>
+                <button class="btn-next" id="btn-next" onclick="nextRound()">
+                    Advance to Round 2 →
+                </button>
+            </footer>
+        </div>
+        <!-- /game-screen -->
+
+        <!-- ═══════════════════════════════ GAME OVER ════════════════-->
+        <div id="gameover-screen">
+            <div class="go-card">
+                <span class="go-icon" id="go-icon">🏆</span>
+                <div class="go-title">Journey's End</div>
+                <div class="go-sub" id="go-sub">
+                    The bazaar has closed its gates for the season.
+                </div>
+
+                <div class="score-box">
+                    <div class="score-lbl">Final Gold</div>
+                    <div class="score-num" id="go-score">0</div>
+                    <div class="score-unit">gold pieces</div>
+                    <div class="score-pl" id="go-pl"></div>
+                </div>
+
+                <div class="rank-badge" id="go-rank">—</div>
+                <br />
+
+                <button
+                    class="btn-gold"
+                    style="max-width: 280px; margin: 0 auto"
+                    onclick="restartGame()"
+                >
+                    🔄 &nbsp; Play Again
+                </button>
+            </div>
+        </div>
+
+        <div id="leaderboard-screen">
+            <div class="start-card" style="max-width: 500px">
+                <h2>🏆 Hall of Merchants</h2>
+                <div id="lb-list" style="margin-bottom: 2rem"></div>
+                <button
+                    class="btn-gold"
+                    style="
+                        background: var(--surface);
+                        border: 1px solid var(--gold-dim);
+                        color: var(--gold-light);
+                    "
+                    onclick="view('start')"
+                >
+                    ← Back to Gates
+                </button>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════════════════════
      GAME LOGIC
 ════════════════════════════════════════════════════════════ -->
-<script>
-'use strict';
+        <script>
+            "use strict";
 
-/* ─── State ──────────────────────────────────────────────────*/
-let sessionId    = null;
-let currentRound = 1;
-let prevPrices   = {};   // item_id → price at last render (for % change)
+            /* ─── State ──────────────────────────────────────────────────*/
+            let sessionId = null;
+            let currentRound = 1;
+            let prevPrices = {}; // item_id → price at last render (for % change)
 
-/* ─── Start / restart ────────────────────────────────────────*/
-async function startGame() {
-  const name = document.getElementById('player-name').value.trim() || 'Merchant';
-  loader(true, 'Opening the Bazaar…');
-  try {
-    const res  = await apiFetch('/api/new-game', 'POST', { player_name: name });
-    sessionId    = res.session_id;
-    currentRound = 1;
-    prevPrices   = {};
-    view('game');
-    await refreshAll();
-  } catch(e) {
-    toast('Could not reach the bazaar — is Flask running?', 'err');
-  } finally {
-    loader(false);
-  }
-}
+            /* ─── Start / restart ────────────────────────────────────────*/
+            async function startGame() {
+                const name =
+                    document.getElementById("player-name").value.trim() ||
+                    "Merchant";
+                loader(true, "Opening the Bazaar…");
+                try {
+                    const res = await apiFetch("/api/new-game", "POST", {
+                        player_name: name,
+                    });
+                    sessionId = res.session_id;
+                    currentRound = 1;
+                    prevPrices = {};
+                    view("game");
+                    await refreshAll();
+                } catch (e) {
+                    toast(
+                        "Could not reach the bazaar — is Flask running?",
+                        "err",
+                    );
+                } finally {
+                    loader(false);
+                }
+            }
 
-function restartGame() {
-  sessionId = null; currentRound = 1; prevPrices = {};
-  view('start');
-}
+            function restartGame() {
+                sessionId = null;
+                currentRound = 1;
+                prevPrices = {};
+                view("start");
+            }
 
-/* ─── Full refresh ───────────────────────────────────────────*/
-async function refreshAll() {
-  await Promise.all([loadMarket(), loadPortfolio(), loadTransactions()]);
-  updateRoundUI();
-}
+            /* ─── Full refresh ───────────────────────────────────────────*/
+            async function refreshAll() {
+                await Promise.all([
+                    loadMarket(),
+                    loadPortfolio(),
+                    loadTransactions(),
+                ]);
+                updateRoundUI();
+            }
 
-/* ─── Market ─────────────────────────────────────────────────*/
-async function loadMarket() {
-  const data = await apiFetch(`/api/market/${sessionId}`);
-  currentRound = data.round;
-  renderMarket(data.items);
-}
+            /* ─── Market ─────────────────────────────────────────────────*/
+            async function loadMarket() {
+                const data = await apiFetch(`/api/market/${sessionId}`);
+                currentRound = data.round;
+                renderMarket(data.items);
+            }
 
-function renderMarket(items) {
-  const grid = document.getElementById('items-grid');
-  grid.innerHTML = items.map(item => {
-    const prev = prevPrices[item.id];
-    let chgHtml = '';
-    if (prev != null) {
-      const pct = ((item.price - prev) / prev * 100).toFixed(1);
-      const cls  = pct > 0 ? 'up' : pct < 0 ? 'dn' : 'flat';
-      const sign = pct > 0 ? '+' : '';
-      chgHtml = `<span class="price-chg ${cls}">${sign}${pct}%</span>`;
-    }
+            function renderMarket(items) {
+                const grid = document.getElementById("items-grid");
+                grid.innerHTML = items
+                    .map((item) => {
+                        const prev = prevPrices[item.id];
+                        let chgHtml = "";
+                        if (prev != null) {
+                            const pct = (
+                                ((item.price - prev) / prev) *
+                                100
+                            ).toFixed(1);
+                            const cls =
+                                pct > 0 ? "up" : pct < 0 ? "dn" : "flat";
+                            const sign = pct > 0 ? "+" : "";
+                            chgHtml = `<span class="price-chg ${cls}">${sign}${pct}%</span>`;
+                        }
 
-    const trendCls = item.trend === 'rising' ? 'rising' : item.trend === 'falling' ? 'falling' : '';
-    const owned    = item.owned || 0;
-    const pl       = owned > 0 ? ((item.price - item.avg_buy_price) * owned) : null;
-    const plHtml   = pl != null
-      ? `<span class="pl-tag ${pl >= 0 ? 'up':'dn'}">${pl>=0?'+':''}${Math.round(pl)}g</span>`
-      : '';
+                        const trendCls =
+                            item.trend === "rising"
+                                ? "rising"
+                                : item.trend === "falling"
+                                  ? "falling"
+                                  : "";
+                        const owned = item.owned || 0;
+                        const pl =
+                            owned > 0
+                                ? (item.price - item.avg_buy_price) * owned
+                                : null;
+                        const plHtml =
+                            pl != null
+                                ? `<span class="pl-tag ${pl >= 0 ? "up" : "dn"}">${pl >= 0 ? "+" : ""}${Math.round(pl)}g</span>`
+                                : "";
 
-    return `
+                        return `
       <div class="icard ${trendCls}" id="card-${item.id}">
         <div class="ic-header">
           <div class="ic-emoji">${item.emoji}</div>
@@ -693,7 +1402,7 @@ function renderMarket(items) {
             <div class="ic-name">${item.name}</div>
             <div class="ic-desc">${item.description}</div>
           </div>
-          <div class="ic-hint" title="Next round forecast: ${item.hint}">${item.hint || '➡️'}</div>
+          <div class="ic-hint" title="Next round forecast: ${item.hint}">${item.hint || "➡️"}</div>
         </div>
 
         <div class="price-row">
@@ -720,41 +1429,55 @@ function renderMarket(items) {
             <button class="qbtn" onclick="adjQty('q${item.id}',1)">+</button>
           </div>
           <button class="btn-buy"  onclick="doBuy(${item.id})">Buy</button>
-          <button class="btn-sell" onclick="doSell(${item.id})" ${owned===0?'disabled':''}>Sell</button>
+          <button class="btn-sell" onclick="doSell(${item.id})" ${owned === 0 ? "disabled" : ""}>Sell</button>
         </div>
       </div>`;
-  }).join('');
+                    })
+                    .join("");
 
-  items.forEach(i => {
-    prevPrices[i.id] = i.price;
-    fetchSparkline(i.id);
-  });
-}
+                items.forEach((i) => {
+                    prevPrices[i.id] = i.price;
+                    fetchSparkline(i.id);
+                });
+            }
 
-/* Sparkline from price-history endpoint */
-async function fetchSparkline(itemId) {
-  try {
-    const hist = await apiFetch(`/api/price-history/${sessionId}/${itemId}`);
-    drawSparkline(itemId, hist.map(h => h.price));
-  } catch{}
-}
+            /* Sparkline from price-history endpoint */
+            async function fetchSparkline(itemId) {
+                try {
+                    const hist = await apiFetch(
+                        `/api/price-history/${sessionId}/${itemId}`,
+                    );
+                    drawSparkline(
+                        itemId,
+                        hist.map((h) => h.price),
+                    );
+                } catch {}
+            }
 
-function drawSparkline(itemId, prices) {
-  const svg = document.getElementById(`spk-${itemId}`);
-  if (!svg || prices.length < 2) return;
-  const W=100, H=30, pad=3;
-  const mn = Math.min(...prices), mx = Math.max(...prices), rng = mx-mn || 1;
-  const pts = prices.map((p,i)=>{
-    const x = pad + (i/(prices.length-1))*(W-pad*2);
-    const y = H - pad - ((p-mn)/rng)*(H-pad*2);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  });
-  const last = prices[prices.length-1], first = prices[0];
-  const col  = last >= first ? '#5dc87a' : '#d95454';
-  const ax   = pts[pts.length-1].split(',');
-  const area = `${pts[0].split(',')[0]},${H} `+pts.join(' ')+` ${ax[0]},${H}`;
+            function drawSparkline(itemId, prices) {
+                const svg = document.getElementById(`spk-${itemId}`);
+                if (!svg || prices.length < 2) return;
+                const W = 100,
+                    H = 30,
+                    pad = 3;
+                const mn = Math.min(...prices),
+                    mx = Math.max(...prices),
+                    rng = mx - mn || 1;
+                const pts = prices.map((p, i) => {
+                    const x = pad + (i / (prices.length - 1)) * (W - pad * 2);
+                    const y = H - pad - ((p - mn) / rng) * (H - pad * 2);
+                    return `${x.toFixed(1)},${y.toFixed(1)}`;
+                });
+                const last = prices[prices.length - 1],
+                    first = prices[0];
+                const col = last >= first ? "#5dc87a" : "#d95454";
+                const ax = pts[pts.length - 1].split(",");
+                const area =
+                    `${pts[0].split(",")[0]},${H} ` +
+                    pts.join(" ") +
+                    ` ${ax[0]},${H}`;
 
-  svg.innerHTML = `
+                svg.innerHTML = `
     <defs>
       <linearGradient id="sg${itemId}" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%"   stop-color="${col}" stop-opacity=".35"/>
@@ -762,193 +1485,330 @@ function drawSparkline(itemId, prices) {
       </linearGradient>
     </defs>
     <polygon points="${area}" fill="url(#sg${itemId})"/>
-    <polyline points="${pts.join(' ')}" fill="none"
+    <polyline points="${pts.join(" ")}" fill="none"
       stroke="${col}" stroke-width="1.5"
       stroke-linejoin="round" stroke-linecap="round"/>
     <circle cx="${ax[0]}" cy="${ax[1]}" r="2.5" fill="${col}"/>`;
-}
+            }
 
-/* ─── Portfolio ──────────────────────────────────────────────*/
-async function loadPortfolio() {
-  const data = await apiFetch(`/api/portfolio/${sessionId}`);
-  document.getElementById('gold-val').textContent  = fmt(data.gold);
-  document.getElementById('worth-val').textContent = fmt(data.total_worth);
+            /* ─── Portfolio ──────────────────────────────────────────────*/
+            async function loadPortfolio() {
+                const data = await apiFetch(`/api/portfolio/${sessionId}`);
+                document.getElementById("gold-val").textContent = fmt(
+                    data.gold,
+                );
+                document.getElementById("worth-val").textContent = fmt(
+                    data.total_worth,
+                );
 
-  const list = document.getElementById('port-list');
-  if (!data.holdings?.length) {
-    list.innerHTML = '<div class="p-empty">Satchel is empty.</div>';
-    return;
-  }
-  list.innerHTML = data.holdings.map(h => {
-    const pl  = h.unrealized_pl;
-    const cls = pl >= 0 ? 'up' : 'dn';
-    return `
+                const list = document.getElementById("port-list");
+                if (!data.holdings?.length) {
+                    list.innerHTML =
+                        '<div class="p-empty">Satchel is empty.</div>';
+                    return;
+                }
+                list.innerHTML = data.holdings
+                    .map((h) => {
+                        const pl = h.unrealized_pl;
+                        const cls = pl >= 0 ? "up" : "dn";
+                        return `
       <div class="holding">
         <span class="h-emoji">${h.emoji}</span>
         <span class="h-name">${h.name}</span>
         <span class="h-qty">×${h.quantity}</span>
-        <span class="h-pl ${cls}">${pl>=0?'+':''}${Math.round(pl)}g</span>
+        <span class="h-pl ${cls}">${pl >= 0 ? "+" : ""}${Math.round(pl)}g</span>
       </div>`;
-  }).join('');
-}
+                    })
+                    .join("");
+            }
 
-/* ─── Trade log ──────────────────────────────────────────────*/
-async function loadTransactions() {
-  const data = await apiFetch(`/api/transactions/${sessionId}`);
-  const log  = document.getElementById('trade-log');
-  if (!data.length) { log.innerHTML='<div class="p-empty">No trades yet.</div>'; return; }
-  log.innerHTML = data.map(t => {
-    const plHtml = t.profit_loss != null
-      ? `<span class="log-pl ${t.profit_loss>=0?'up':'dn'}">${t.profit_loss>=0?'+':''}${Math.round(t.profit_loss)}g</span>`
-      : '';
-    return `
+            /* ─── Trade log ──────────────────────────────────────────────*/
+            async function loadTransactions() {
+                const data = await apiFetch(`/api/transactions/${sessionId}`);
+                const log = document.getElementById("trade-log");
+                if (!data.length) {
+                    log.innerHTML = '<div class="p-empty">No trades yet.</div>';
+                    return;
+                }
+                log.innerHTML = data
+                    .map((t) => {
+                        const plHtml =
+                            t.profit_loss != null
+                                ? `<span class="log-pl ${t.profit_loss >= 0 ? "up" : "dn"}">${t.profit_loss >= 0 ? "+" : ""}${Math.round(t.profit_loss)}g</span>`
+                                : "";
+                        return `
       <div class="log-row">
         <span class="log-badge ${t.action}">${t.action.toUpperCase()}</span>
         <div class="log-text">${t.emoji} <strong>${t.name}</strong> ×${t.quantity} @ ${Math.round(t.price)}g</div>
         ${plHtml}
       </div>`;
-  }).join('');
-}
+                    })
+                    .join("");
+            }
 
-/* ─── Buy / Sell ─────────────────────────────────────────────*/
-async function doBuy(itemId) {
-  const qty = qty$(itemId);
-  try {
-    const r = await apiFetch('/api/buy', 'POST', {session_id:sessionId, item_id:itemId, quantity:qty});
-    if (r.error) { toast(r.error,'err'); return; }
-    flash(itemId,'buy');
-    toast(`Bought ×${qty} for ${fmt(r.spent)}g`, 'ok');
-    await Promise.all([loadPortfolio(), loadTransactions(), loadMarket()]);
-  } catch(e) { toast('Trade failed','err'); }
-}
+            /* ─── Buy / Sell ─────────────────────────────────────────────*/
+            async function doBuy(itemId) {
+                const qty = qty$(itemId);
+                try {
+                    const r = await apiFetch("/api/buy", "POST", {
+                        session_id: sessionId,
+                        item_id: itemId,
+                        quantity: qty,
+                    });
+                    if (r.error) {
+                        toast(r.error, "err");
+                        return;
+                    }
+                    flash(itemId, "buy");
+                    toast(`Bought ×${qty} for ${fmt(r.spent)}g`, "ok");
+                    await Promise.all([
+                        loadPortfolio(),
+                        loadTransactions(),
+                        loadMarket(),
+                    ]);
+                } catch (e) {
+                    toast("Trade failed", "err");
+                }
+            }
 
-async function doSell(itemId) {
-  const qty = qty$(itemId);
-  try {
-    const r = await apiFetch('/api/sell', 'POST', {session_id:sessionId, item_id:itemId, quantity:qty});
-    if (r.error) { toast(r.error,'err'); return; }
-    const plTxt = r.profit_loss>=0
-      ? `+${Math.round(r.profit_loss)}g profit`
-      : `${Math.round(r.profit_loss)}g loss`;
-    flash(itemId,'sell');
-    toast(`Sold for ${fmt(r.earned)}g  (${plTxt})`, r.profit_loss>=0?'ok':'err');
-    await Promise.all([loadPortfolio(), loadTransactions(), loadMarket()]);
-  } catch(e) { toast('Trade failed','err'); }
-}
+            async function doSell(itemId) {
+                const qty = qty$(itemId);
+                try {
+                    const r = await apiFetch("/api/sell", "POST", {
+                        session_id: sessionId,
+                        item_id: itemId,
+                        quantity: qty,
+                    });
+                    if (r.error) {
+                        toast(r.error, "err");
+                        return;
+                    }
+                    const plTxt =
+                        r.profit_loss >= 0
+                            ? `+${Math.round(r.profit_loss)}g profit`
+                            : `${Math.round(r.profit_loss)}g loss`;
+                    flash(itemId, "sell");
+                    toast(
+                        `Sold for ${fmt(r.earned)}g  (${plTxt})`,
+                        r.profit_loss >= 0 ? "ok" : "err",
+                    );
+                    await Promise.all([
+                        loadPortfolio(),
+                        loadTransactions(),
+                        loadMarket(),
+                    ]);
+                } catch (e) {
+                    toast("Trade failed", "err");
+                }
+            }
 
-/* ─── Round advancement ──────────────────────────────────────*/
-async function nextRound() {
-  loader(true, currentRound>=10 ? 'Closing the Bazaar…' : 'Setting new prices…');
-  try {
-    const r = await apiFetch('/api/next-round','POST',{session_id:sessionId});
-    if (r.game_over) { showGameOver(r.final_score); return; }
-    currentRound = r.round;
-    await refreshAll();
-    toast(`Round ${currentRound} — Fresh prices at the bazaar!`, 'info');
-  } catch(e) { toast('Failed to advance round','err'); }
-  finally { loader(false); }
-}
+            /* ─── Round advancement ──────────────────────────────────────*/
+            async function nextRound() {
+                loader(
+                    true,
+                    currentRound >= 10
+                        ? "Closing the Bazaar…"
+                        : "Setting new prices…",
+                );
+                try {
+                    const r = await apiFetch("/api/next-round", "POST", {
+                        session_id: sessionId,
+                    });
+                    if (r.game_over) {
+                        showGameOver(r.final_score);
+                        return;
+                    }
+                    currentRound = r.round;
+                    await refreshAll();
+                    toast(
+                        `Round ${currentRound} — Fresh prices at the bazaar!`,
+                        "info",
+                    );
+                } catch (e) {
+                    toast("Failed to advance round", "err");
+                } finally {
+                    loader(false);
+                }
+            }
 
-function updateRoundUI() {
-  document.getElementById('round-val').textContent = `${currentRound} / 10`;
+            function updateRoundUI() {
+                document.getElementById("round-val").textContent =
+                    `${currentRound} / 10`;
 
-  const row = document.getElementById('rdots-row');
-  row.innerHTML = Array.from({length:10}, (_,i)=>{
-    const n = i+1;
-    const c = n < currentRound ? 'done' : n === currentRound ? 'current' : '';
-    return `<div class="rdot ${c}"></div>`;
-  }).join('');
+                const row = document.getElementById("rdots-row");
+                row.innerHTML = Array.from({ length: 10 }, (_, i) => {
+                    const n = i + 1;
+                    const c =
+                        n < currentRound
+                            ? "done"
+                            : n === currentRound
+                              ? "current"
+                              : "";
+                    return `<div class="rdot ${c}"></div>`;
+                }).join("");
 
-  const btn = document.getElementById('btn-next');
-  if (currentRound >= 10) {
-    btn.textContent = '⚖️  Close the Bazaar';
-    btn.classList.add('final-round');
-    document.getElementById('footer-tip').textContent = 'Final round! Sell everything before closing gates!';
-  } else {
-    btn.textContent = `Advance to Round ${currentRound+1} →`;
-    btn.classList.remove('final-round');
-    document.getElementById('footer-tip').textContent = 'Hint arrows show next round\'s direction — use them wisely!';
-  }
-}
+                const btn = document.getElementById("btn-next");
+                if (currentRound >= 10) {
+                    btn.textContent = "⚖️  Close the Bazaar";
+                    btn.classList.add("final-round");
+                    document.getElementById("footer-tip").textContent =
+                        "Final round! Sell everything before closing gates!";
+                } else {
+                    btn.textContent = `Advance to Round ${currentRound + 1} →`;
+                    btn.classList.remove("final-round");
+                    document.getElementById("footer-tip").textContent =
+                        "Hint arrows show next round's direction — use them wisely!";
+                }
+            }
 
-/* ─── Game over ──────────────────────────────────────────────*/
-function showGameOver(finalScore) {
-  loader(false);
-  const profit = (finalScore || 0) - 500;
-  document.getElementById('go-score').textContent = fmt(finalScore || 0);
-  const plHtml = profit >= 0
-    ? `<span style="color:var(--green)">+${Math.round(profit)}g profit from your 500g start</span>`
-    : `<span style="color:var(--red)">${Math.round(profit)}g loss from your 500g start</span>`;
-  document.getElementById('go-pl').innerHTML = plHtml;
+            /* ─── Game over ──────────────────────────────────────────────*/
+            function showGameOver(finalScore) {
+                loader(false);
+                const profit = (finalScore || 0) - 500;
+                document.getElementById("go-score").textContent = fmt(
+                    finalScore || 0,
+                );
+                const plHtml =
+                    profit >= 0
+                        ? `<span style="color:var(--green)">+${Math.round(profit)}g profit from your 500g start</span>`
+                        : `<span style="color:var(--red)">${Math.round(profit)}g loss from your 500g start</span>`;
+                document.getElementById("go-pl").innerHTML = plHtml;
 
-  let icon,rankTxt,rankCls,sub;
-  if      (finalScore >= 1200) { icon='👑'; rankTxt='👑 Legendary Merchant'; rankCls='rank-legend'; sub='The bazaar bows before your mastery!'; }
-  else if (finalScore >=  900) { icon='🏆'; rankTxt='⭐ Great Merchant';     rankCls='rank-great';  sub='A profitable season — well played!'; }
-  else if (finalScore >=  600) { icon='📦'; rankTxt='🔵 Decent Merchant';    rankCls='rank-decent'; sub='You survived. Not bad for a rookie.'; }
-  else                          { icon='💀'; rankTxt='💀 Ruined Merchant';    rankCls='rank-broke';  sub='The market took everything…'; }
+                let icon, rankTxt, rankCls, sub;
+                if (finalScore >= 1200) {
+                    icon = "👑";
+                    rankTxt = "👑 Legendary Merchant";
+                    rankCls = "rank-legend";
+                    sub = "The bazaar bows before your mastery!";
+                } else if (finalScore >= 900) {
+                    icon = "🏆";
+                    rankTxt = "⭐ Great Merchant";
+                    rankCls = "rank-great";
+                    sub = "A profitable season — well played!";
+                } else if (finalScore >= 600) {
+                    icon = "📦";
+                    rankTxt = "🔵 Decent Merchant";
+                    rankCls = "rank-decent";
+                    sub = "You survived. Not bad for a rookie.";
+                } else {
+                    icon = "💀";
+                    rankTxt = "💀 Ruined Merchant";
+                    rankCls = "rank-broke";
+                    sub = "The market took everything…";
+                }
 
-  document.getElementById('go-icon').textContent   = icon;
-  document.getElementById('go-sub').textContent    = sub;
-  const rb = document.getElementById('go-rank');
-  rb.textContent  = rankTxt;
-  rb.className    = `rank-badge ${rankCls}`;
+                document.getElementById("go-icon").textContent = icon;
+                document.getElementById("go-sub").textContent = sub;
+                const rb = document.getElementById("go-rank");
+                rb.textContent = rankTxt;
+                rb.className = `rank-badge ${rankCls}`;
 
-  view('gameover');
-}
+                view("gameover");
+            }
 
-/* ─── Helpers ────────────────────────────────────────────────*/
-function view(name) {
-  ['start','game','gameover'].forEach(n => {
-    const el = document.getElementById(n+'-screen');
-    el.style.display = n === name ? (n==='game'?'flex':'flex') : 'none';
-  });
-}
+            // Add this new function
+            async function showLeaderboard() {
+                loader(true, "Consulting the archives…");
+                try {
+                    const data = await apiFetch("/api/leaderboard");
+                    const list = document.getElementById("lb-list");
 
-function loader(on, msg='') {
-  const el = document.getElementById('loader');
-  el.classList.toggle('off', !on);
-  if (msg) document.getElementById('loader-txt').textContent = msg;
-}
+                    if (!data || data.length === 0) {
+                        list.innerHTML =
+                            '<div class="p-empty">The ledger is empty. Be the first!</div>';
+                    } else {
+                        list.innerHTML = data
+                            .map(
+                                (d, i) => `
+        <div class="lb-row">
+          <span class="lb-rank">#${i + 1}</span>
+          <span class="lb-name">${d.player_name}</span>
+          <span class="lb-score">${fmt(d.final_score)}g</span>
+        </div>
+      `,
+                            )
+                            .join("");
+                    }
+                    view("leaderboard");
+                } catch (e) {
+                    toast("Could not load the ledger", "err");
+                } finally {
+                    loader(false);
+                }
+            }
 
-let _tt;
-function toast(msg, type='info') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className   = `toast ${type} show`;
-  clearTimeout(_tt);
-  _tt = setTimeout(()=> t.classList.remove('show'), 2900);
-}
+            /* ─── Helpers ────────────────────────────────────────────────*/
+            // UPDATE YOUR EXISTING view() function to include 'leaderboard':
+            function view(name) {
+                ["start", "game", "gameover", "leaderboard"].forEach((n) => {
+                    const el = document.getElementById(n + "-screen");
+                    el.style.display =
+                        n === name
+                            ? n === "start"
+                                ? "flex"
+                                : n === "game"
+                                  ? "flex"
+                                  : "flex"
+                            : "none";
+                });
+            }
 
-function flash(itemId, type) {
-  const c = document.getElementById(`card-${itemId}`);
-  if (!c) return;
-  c.classList.remove('fbuy','fsell');
-  void c.offsetWidth;
-  c.classList.add(type==='buy' ? 'fbuy' : 'fsell');
-}
+            function loader(on, msg = "") {
+                const el = document.getElementById("loader");
+                el.classList.toggle("off", !on);
+                if (msg)
+                    document.getElementById("loader-txt").textContent = msg;
+            }
 
-function adjQty(id, d) {
-  const el = document.getElementById(id);
-  el.value  = Math.max(1, (parseInt(el.value)||1)+d);
-}
+            let _tt;
+            function toast(msg, type = "info") {
+                const t = document.getElementById("toast");
+                t.textContent = msg;
+                t.className = `toast ${type} show`;
+                clearTimeout(_tt);
+                _tt = setTimeout(() => t.classList.remove("show"), 2900);
+            }
 
-function qty$(itemId) { return Math.max(1, parseInt(document.getElementById(`q${itemId}`).value)||1); }
+            function flash(itemId, type) {
+                const c = document.getElementById(`card-${itemId}`);
+                if (!c) return;
+                c.classList.remove("fbuy", "fsell");
+                void c.offsetWidth;
+                c.classList.add(type === "buy" ? "fbuy" : "fsell");
+            }
 
-function fmt(n) { return Math.round(n).toLocaleString(); }
+            function adjQty(id, d) {
+                const el = document.getElementById(id);
+                el.value = Math.max(1, (parseInt(el.value) || 1) + d);
+            }
 
-async function apiFetch(path, method='GET', body=null) {
-  const opts = { method, headers:{'Content-Type':'application/json'} };
-  if (body) opts.body = JSON.stringify(body);
-  const res  = await fetch(path, opts);
-  if (!res.ok) {
-    const err = await res.json().catch(()=>({}));
-    throw new Error(err.error || `HTTP ${res.status}`);
-  }
-  return res.json();
-}
+            function qty$(itemId) {
+                return Math.max(
+                    1,
+                    parseInt(document.getElementById(`q${itemId}`).value) || 1,
+                );
+            }
 
-/* ─── Boot ───────────────────────────────────────────────────*/
-view('start');
-</script>
-</body>
+            function fmt(n) {
+                return Math.round(n).toLocaleString();
+            }
+
+            async function apiFetch(path, method = "GET", body = null) {
+                const opts = {
+                    method,
+                    headers: { "Content-Type": "application/json" },
+                };
+                if (body) opts.body = JSON.stringify(body);
+                const res = await fetch(path, opts);
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.error || `HTTP ${res.status}`);
+                }
+                return res.json();
+            }
+
+            /* ─── Boot ───────────────────────────────────────────────────*/
+            view("start");
+        </script>
+    </body>
 </html>
