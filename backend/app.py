@@ -506,31 +506,6 @@ def get_transactions(session_id):
         cursor.close()
         db.close()
 
-@app.route('/api/leaderboard', methods=['GET'])
-def get_leaderboard():
-    """Return the top 10 highest-scoring completed games."""
-    db     = get_db()
-    cursor = db.cursor(dictionary=True)
-    try:
-        cursor.execute("""
-            SELECT player_name, final_score, created_at
-            FROM game_sessions
-            WHERE status = 'completed' AND final_score IS NOT NULL
-            ORDER BY final_score DESC
-            LIMIT 10
-        """)
-        leaders = cursor.fetchall()
-        
-        for l in leaders:
-            l['final_score'] = float(l['final_score'])
-            l['created_at']  = str(l['created_at'])
-            
-        return jsonify(leaders)
-    except Exception as exc:
-        return jsonify({'error': str(exc)}), 500
-    finally:
-        cursor.close()
-        db.close()
 
 @app.route('/api/health', methods=['GET'])
 def health():
