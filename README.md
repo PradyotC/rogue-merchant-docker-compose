@@ -73,6 +73,7 @@ This project demonstrates several core Docker concepts:
 | POST | `/api/next-round` | Advance round or end game |
 | GET  | `/api/price-history/<sid>/<item_id>` | History for sparklines |
 | GET  | `/api/transactions/<sid>` | Trade log |
+| GET  | `/api/leaderboard` | Top 10 high scores from completed games |
 | GET  | `/api/health` | Health check |
 
 ---
@@ -86,6 +87,7 @@ This project demonstrates several core Docker concepts:
 | Realized P&L on every sell | `transactions` |
 | Net worth = gold + portfolio value | `game_sessions` + join |
 | Sparkline history | `market_prices` filtered by round ≤ current |
+| Global Hall of Merchants (Leaderboard) | `game_sessions` (filtered by completed) |
 
 The frontend is completely stateless — the session ID is the only thing stored client-side.
 
